@@ -1,7 +1,8 @@
+from turtle import title
 from typing import Optional
 from pydantic import BaseModel 
 from fastapi import FastAPI
-from fastapi import Body, Query
+from fastapi import Body, Query, Path
 
 app = FastAPI()
 
@@ -35,8 +36,29 @@ def createPerson(person:Person = Body(...)):
 @app.get("/person/detail")
 def showPerson(
     #Query Parameter obligatorio
-    name:Optional[str] = Query(None, min_length=1, max_length=50),
+    name:Optional[str] = Query(
+        None, min_length=1, 
+        max_length=50,
+        title='Person name',
+        description='This is the person name, it`s between 1 and 50 characters'
+        ),
     #Query Parameter obligatorio
-    age: str =Query(...)
+    age: str =Query(
+        ...,
+        title= 'Person Age',
+        description='The age of person it`s between 0 and 99, is a number and is required'
+        )
 ):
     return{name:age}
+
+#Validaciones Path Parameters
+@app.get("/person/detail/{person_id}")
+def showPerson(
+    person_id: int = Path(
+        ..., 
+        gt=0,
+        title= 'this is the person ID',
+        description='It`s a number and required'
+        )
+):
+    return{person_id: 'It exist'}
