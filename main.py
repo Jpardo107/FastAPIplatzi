@@ -25,21 +25,35 @@ class Person(BaseModel):
     Nombre: str = Field(
         ...,
         min_length=1,
-        max_length=30
+        max_length=30,
+        example='Daniel'
         )
     Apellido: str = Field(
         ...,
         min_length=1,
-        max_length=30
+        max_length=30,
+        example='Maldonado'
         )
     Edad: int =Field(
         ...,
-        gt = 0,
-        le=115
+        gt=0,
+        le=115,
+        example=15
         )
     #opcionales
-    colorPelo: Optional[ColorPelo] = Field(default = None)
-    Casado: Optional[bool] = Field(default=None)
+    colorPelo: Optional[ColorPelo] = Field(default = None, example='Brown')
+    Casado: Optional[bool] = Field(default=None, example='true')
+    #Dentro de la misma clase
+    # class Config:
+    #     schema_extra = {
+    #         "example" :{
+    #             'Nombre': 'Jaime',
+    #             'Apellido': 'Pardo',
+    #             'Edad': 32,
+    #             'colorPelo': 'Blonde',
+    #             'Casado': 'false'
+    #         }
+    #     }
 
 #comando para correr la API
 # uvicorn main:app --reload
@@ -100,8 +114,8 @@ def update_person(
         gt=0
         ),
         person: Person = Body(...),
-        Location: Location = Body(...)
+        #Location: Location = Body(...)
 ):
-    result = person.dict()
-    result.update(Location.dict())
-    return result
+    # result = person.dict()
+    # result.update(Location.dict())
+    return person
