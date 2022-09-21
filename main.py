@@ -6,6 +6,11 @@ from fastapi import Body, Query, Path
 
 app = FastAPI()
 
+class Location(BaseModel):
+    city: str
+    state: str
+    country: str
+
 class Person(BaseModel):
     #Requeridos
     Nombre: str
@@ -62,3 +67,20 @@ def showPerson(
         )
 ):
     return{person_id: 'It exist'}
+
+#Validacion de Request Body
+
+@app.put('/person/{person_id}')
+def update_person(
+    person_id: int = Path(
+        ...,
+        title='Person ID',
+        description='This is a person id, it`s a number and required',
+        gt=0
+        ),
+        person: Person = Body(...),
+        Location: Location = Body(...)
+):
+    result = person.dict()
+    result.update(Location.dict())
+    return result
