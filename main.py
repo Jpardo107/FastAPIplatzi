@@ -1,24 +1,45 @@
-from turtle import title
+
+from enum import Enum
 from typing import Optional
-from pydantic import BaseModel 
+from pydantic import BaseModel, Field
 from fastapi import FastAPI
 from fastapi import Body, Query, Path
 
 app = FastAPI()
 
+class ColorPelo(Enum):
+    white ='White'
+    brown = 'Brown'
+    black = 'Black'
+    blonde = 'Blonde'
+    red = 'Red'
+
+
 class Location(BaseModel):
     city: str
     state: str
     country: str
-
+#Validaciones de Modelo
 class Person(BaseModel):
     #Requeridos
-    Nombre: str
-    Apellido: str
-    Edad: int
+    Nombre: str = Field(
+        ...,
+        min_length=1,
+        max_length=30
+        )
+    Apellido: str = Field(
+        ...,
+        min_length=1,
+        max_length=30
+        )
+    Edad: int =Field(
+        ...,
+        gt = 0,
+        le=115
+        )
     #opcionales
-    colorPelo: Optional[str] = None
-    Casado: Optional[bool] = None
+    colorPelo: Optional[ColorPelo] = Field(default = None)
+    Casado: Optional[bool] = Field(default=None)
 
 #comando para correr la API
 # uvicorn main:app --reload
