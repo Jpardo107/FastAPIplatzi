@@ -2,7 +2,7 @@
 from enum import Enum
 from typing import Optional
 from pydantic import BaseModel, Field
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi import Body, Query, Path
 
 app = FastAPI()
@@ -54,20 +54,30 @@ class  PersonOut(PersonModel):
 # uvicorn main:app --reload
 
 #path Operations decorators
-@app.get("/")
+@app.get(
+    path="/", 
+    status_code=status.HTTP_200_OK
+    )
 #path operation functions
 def home():
     return{'Hello':'World'}
 
 #Request and Response Body
 
-@app.post("/person/new", response_model=PersonOut)
+@app.post(
+    path="/person/new", 
+    response_model=PersonOut,
+    status_code=status.HTTP_201_CREATED
+    )
 def createPerson(person:Person = Body(...)):
     return(person)
 
 #Validaciones Query Parameters
 
-@app.get("/person/detail")
+@app.get(
+    path="/person/detail",
+    status_code=status.HTTP_200_OK
+    )
 def showPerson(
     #Query Parameter obligatorio
     name:Optional[str] = Query(
@@ -88,7 +98,9 @@ def showPerson(
     return{name:age}
 
 #Validaciones Path Parameters
-@app.get("/person/detail/{person_id}")
+@app.get(
+    path="/person/detail/{person_id}"
+    )
 def showPerson(
     person_id: int = Path(
         ..., 
@@ -102,7 +114,9 @@ def showPerson(
 
 #Validacion de Request Body
 
-@app.put('/person/{person_id}')
+@app.put(
+    path='/person/{person_id}'
+    )
 def update_person(
     person_id: int = Path(
         ...,
