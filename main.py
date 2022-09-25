@@ -1,11 +1,17 @@
 
+from email.policy import default
 from enum import Enum
+from importlib.resources import path
 from typing import Optional
 from pydantic import BaseModel, Field
 from fastapi import FastAPI, status
-from fastapi import Body, Query, Path
+from fastapi import Body, Query, Path, Form
 
 app = FastAPI()
+
+class LoginOut(BaseModel):
+    username: str = Field(...,min_length=1, max_length=20, example='jpardo107')
+    message: str = Field(default='Login Succesfully!!')
 
 class ColorPelo(Enum):
     white ='White'
@@ -13,7 +19,6 @@ class ColorPelo(Enum):
     black = 'Black'
     blonde = 'Blonde'
     red = 'Red'
-
 
 class Location(BaseModel):
     city: str
@@ -131,3 +136,11 @@ def update_person(
     # result = person.dict()
     # result.update(Location.dict())
     return person
+
+@app.post(
+    path='/login',
+    response_model =LoginOut,
+    status_code=status.HTTP_200_OK
+)
+def login(username: str = Form(...), password: str = Form(...)):
+    return LoginOut(username = username)
