@@ -43,6 +43,32 @@ class Person(BaseModel):
     #opcionales
     colorPelo: Optional[ColorPelo] = Field(default = None, example='Brown')
     Casado: Optional[bool] = Field(default=None, example='true')
+    password: str = Field(..., min_length=8, example = '12345678')
+
+class  PersonOut(BaseModel):
+     #Requeridos
+    Nombre: str = Field(
+        ...,
+        min_length=1,
+        max_length=30,
+        example='Daniel'
+        )
+    Apellido: str = Field(
+        ...,
+        min_length=1,
+        max_length=30,
+        example='Maldonado'
+        )
+    Edad: int =Field(
+        ...,
+        gt=0,
+        le=115,
+        example=15
+        )
+    #opcionales
+    colorPelo: Optional[ColorPelo] = Field(default = None, example='Brown')
+    Casado: Optional[bool] = Field(default=None, example='true')
+ 
     #Dentro de la misma clase
     # class Config:
     #     schema_extra = {
@@ -66,8 +92,7 @@ def home():
 
 #Request and Response Body
 
-@app.post("/person/new")
-
+@app.post("/person/new", response_model=PersonOut)
 def createPerson(person:Person = Body(...)):
     return(person)
 
