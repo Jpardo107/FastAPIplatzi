@@ -65,7 +65,8 @@ class  PersonOut(PersonModel):
 #path Operations decorators
 @app.get(
     path="/", 
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=['Home']
     )
 #path operation functions
 def home():
@@ -76,7 +77,8 @@ def home():
 @app.post(
     path="/person/new", 
     response_model=PersonOut,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    tags=['Persons']
     )
 def createPerson(person:Person = Body(...)):
     return(person)
@@ -85,7 +87,8 @@ def createPerson(person:Person = Body(...)):
 
 @app.get(
     path="/person/detail",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=['Persons']
     )
 def showPerson(
     #Query Parameter obligatorio
@@ -111,7 +114,8 @@ def showPerson(
 persons=[1,2,3,4,5]
 
 @app.get(
-    path="/person/detail/{person_id}"
+    path="/person/detail/{person_id}",
+    tags=['Persons']
     )
 def showPerson(
     person_id: int = Path(
@@ -132,7 +136,8 @@ def showPerson(
 #Validacion de Request Body
 
 @app.put(
-    path='/person/{person_id}'
+    path='/person/{person_id}',
+    tags=['Persons']
     )
 def update_person(
     person_id: int = Path(
@@ -140,7 +145,8 @@ def update_person(
         title='Person ID',
         description='This is a person id, it`s a number and required',
         gt=0,
-        example=6
+        example=6,
+        
         ),
         person: Person = Body(...),
         #Location: Location = Body(...)
@@ -152,7 +158,8 @@ def update_person(
 @app.post(
     path='/login',
     response_model =LoginOut,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=['Persons']
 )
 def login(username: str = Form(...), password: str = Form(...)):
     return LoginOut(username = username)
@@ -160,7 +167,8 @@ def login(username: str = Form(...), password: str = Form(...)):
 
 @app.post(
     path='/contact',
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=['Forms']
 )
 def contact(
     firstname: str = Form(
@@ -185,7 +193,10 @@ def contact(
     return user_agent
 
 #Files
-@app.post(path='/post-image')
+@app.post(
+    path='/post-image',
+    tags=['Files']
+    )
 def post_image(
     image: UploadFile = File(...)
 ):
