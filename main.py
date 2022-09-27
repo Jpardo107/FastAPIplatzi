@@ -112,7 +112,8 @@ def createPerson(person:Person = Body(...)):
     path="/person/detail",
     status_code=status.HTTP_200_OK,
     tags=['Persons'],
-    summary='Show person detail saved in the app'
+    summary='Show person detail saved in the app',
+    deprecated=True
     )
 def showPerson(
     #Query Parameter obligatorio
