@@ -66,10 +66,21 @@ class  PersonOut(PersonModel):
 @app.get(
     path="/", 
     status_code=status.HTTP_200_OK,
-    tags=['Home']
+    tags=['Home'],
+    summary='App home page'
     )
 #path operation functions
 def home():
+    """
+    Home Page
+
+    This path operation display de message Hello World in a dictionary format
+    
+    Parameters:
+    - No parameters
+
+    Returns a dictionary {'Hello':'World'}
+    """
     return{'Hello':'World'}
 
 #Request and Response Body
@@ -78,9 +89,21 @@ def home():
     path="/person/new", 
     response_model=PersonOut,
     status_code=status.HTTP_201_CREATED,
-    tags=['Persons']
+    tags=['Persons'],
+    summary='Create person in the app'
     )
 def createPerson(person:Person = Body(...)):
+    """
+    Create Person
+
+    This path operation create a person in the app and save the information in the database
+    
+    Parameters:
+    - Request body parameter:
+        - **person: Person** -> A person model with firstname, age, hair color and marital status
+
+    Returns a person model with firstname, age, hair color and marital status
+    """
     return(person)
 
 #Validaciones Query Parameters
@@ -88,7 +111,8 @@ def createPerson(person:Person = Body(...)):
 @app.get(
     path="/person/detail",
     status_code=status.HTTP_200_OK,
-    tags=['Persons']
+    tags=['Persons'],
+    summary='Show person detail saved in the app'
     )
 def showPerson(
     #Query Parameter obligatorio
@@ -107,6 +131,17 @@ def showPerson(
         example=42
         )
 ):
+    """
+    Show person detail
+
+    This path operation show person details saved in the app
+    
+    Parameters:
+    - Response body parameter:
+        - **person: Person** -> A person model with firstname and age
+
+    Returns a person model with firstname and age in a dictionary format
+    """
     return{name:age}
 
 #Validaciones Path Parameters
@@ -115,7 +150,8 @@ persons=[1,2,3,4,5]
 
 @app.get(
     path="/person/detail/{person_id}",
-    tags=['Persons']
+    tags=['Persons'],
+    summary='Show if a person exist or not in the app'
     )
 def showPerson(
     person_id: int = Path(
@@ -126,6 +162,17 @@ def showPerson(
         example=3
         )
 ):
+    """
+    Show if person exist
+
+    This path operation show if a person exist in the app with the id provided
+    
+    Parameters:
+    - request body parameter:
+        - **person_id: int** -> person id provided and will be compared with de saved id in the app
+
+    Returns a message 'exist' or 'not exist' as appropriate
+    """
     if person_id not in persons:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -137,7 +184,8 @@ def showPerson(
 
 @app.put(
     path='/person/{person_id}',
-    tags=['Persons']
+    tags=['Persons'],
+    summary='Update person attributes with the id provided'
     )
 def update_person(
     person_id: int = Path(
@@ -153,22 +201,50 @@ def update_person(
 ):
     # result = person.dict()
     # result.update(Location.dict())
+
+    """
+    Update a person attributes according to the id provided
+
+    This path operation update the selected person attributes that matched with de id provided
+    
+    Parameters:
+    - request body parameter:
+        - **person_id: int** -> person id provided and will be compared with de saved id in the app
+        - **selected parameter** -> selected parameter and update
+
+    Returns a person whit the updates made
+    """
+
     return person
 #Forms
 @app.post(
     path='/login',
     response_model =LoginOut,
     status_code=status.HTTP_200_OK,
-    tags=['Persons']
+    tags=['Persons'],
+    summary='Login user from a form'
 )
 def login(username: str = Form(...), password: str = Form(...)):
+    """
+    login a user
+
+    This path operation login a user with a username and password
+    
+    Parameters:
+    - request body parameter:
+        - **username: LoginOut** -> username is a string from a form in the frontend
+        - **password: str** -> password is a string from a form in the frontend
+
+    Returns a username
+    """
     return LoginOut(username = username)
 #Cookies and Headers Parameters
 
 @app.post(
     path='/contact',
     status_code=status.HTTP_200_OK,
-    tags=['Forms']
+    tags=['Forms'],
+    summary='Contact from a form in the frontend'
 )
 def contact(
     firstname: str = Form(
@@ -190,6 +266,18 @@ def contact(
     user_agent: Optional[str] = Header(default= None),
     ads: Optional[str] = Cookie(default= None)
 ):
+    """
+    form contact
+
+    This path operation capture a contact request 
+    
+    Parameters:
+    - request body parameter:
+        - **username: str** -> username is a string from a form in the frontend
+        - **password: str** -> password is a string from a form in the frontend
+
+    Returns a username
+    """
     return user_agent
 
 #Files
